@@ -59,6 +59,20 @@ app.use(session({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// 定义合法路径
+const validPaths = [
+    "/", "/login", "/logout", "/checkSession", "/setPassword", "/ota", "/ota/update",
+    "/accounts", "/nodes", "/info", "/getMainUser", "/checkAccountsPage", "/checkAccounts",
+    "/getNotificationSettings", "/setNotificationSettings", "/notificationSettings"
+];
+
+// 捕获所有未定义的路径
+app.use((req, res) => {
+    if (!validPaths.includes(req.path)) {
+        res.sendFile(path.join(__dirname, "public", "nginx.html"));
+    }
+});
+
 function checkPassword(req, res, next) {
     if (!fs.existsSync(PASSWORD_FILE)) {
         return res.redirect("/setPassword");
