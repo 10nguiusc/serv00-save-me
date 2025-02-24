@@ -67,11 +67,13 @@ const validPaths = [
 ];
 
 // 捕获所有未定义的路径
-app.use((req, res) => {
-    if (!validPaths.includes(req.path)) {
-        res.sendFile(path.join(__dirname, "public", "nginx.html"));
+app.use((req, res, next) => {
+    if (validPaths.includes(req.path)) {
+        return next();
     }
+    res.sendFile(path.join(__dirname, "public", "nginx.html"));
 });
+
 
 function checkPassword(req, res, next) {
     if (!fs.existsSync(PASSWORD_FILE)) {
