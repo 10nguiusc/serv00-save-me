@@ -13,8 +13,17 @@ const configFilePath = path.join(__dirname, 'config.json');
 const SINGBOX_CONFIG_PATH = path.join(process.env.HOME, "serv00-play", "singbox", "singbox.json");
 const CONFIG_PATH = path.join(process.env.HOME, "serv00-play", "singbox", "config.json");
 
-app.use(express.static(path.join(__dirname, 'public')));
+// 静态文件目录
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// 定义已知的合法路径
+const validPaths = [
+    "/info", "/hy2ip", "/node", "/log", "/newset", "/config", "/outbounds",
+    "/api/log", "/api/get-config", "/api/update-config", "/getConfig", "/updateConfig",
+    "/setWireGuard", "/setSocks", "/disableOutbound", "/getOutboundStatus"
+];
 
 let logs = [];
 let latestStartLog = "";
@@ -599,12 +608,14 @@ app.get("/outbounds", (req, res) => {
 });
 
 app.use((req, res, next) => {
-    const validPaths = ["/info", "/hy2ip", "/node", "/log", "/newset", "/config", "/outbounds"];
     if (validPaths.includes(req.path)) {
         return next();
     }
-    res.status(404).send("页面未找到");
+    res.sendFile(path.join(__dirname, "public", "nginx.html"));
 });
+
+
+
 app.listen(3000, () => {
     const timestamp = new Date().toLocaleString();
     const startMsg = `${timestamp} 服务器已启动，监听端口 3000`;
