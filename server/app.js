@@ -452,7 +452,7 @@ app.get("/checkAccounts", async (req, res) => {
         let results = {};
         const promises = users.map(async (username) => {
             try {
-                const apiUrl = `https://s00test.64t76dee9sk5.workers.dev/?username=${username}`;
+                const apiUrl = `https://check.594880.xyz/api?user=${username}`;
                 const response = await axios.get(apiUrl);
                 const data = response.data;
 
